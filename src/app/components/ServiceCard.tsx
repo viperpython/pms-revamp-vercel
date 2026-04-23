@@ -1,97 +1,96 @@
-import { motion } from "framer-motion";
-import Image from "next/image";
-import Link from 'next/link';
-import { useState } from "react";
+"use client";
 
-const serviceLinks: Record<string, string> = {
-  "Testing": "/services/fwd-testing",
-  "Design": "/services/overlay-rehab-design",
-  "Research": "/services/advisory-training",
-};
+import { motion, useReducedMotion } from "framer-motion";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import AnimatedCounter from "./AnimatedCounter";
+import type { LucideIcon } from "lucide-react";
 
-// Define the service prop type for type safety
-interface Service {
+export interface Service {
   title: string;
   desc: string;
-  icon: string;
+  icon: LucideIcon;
   stats: string;
   label: string;
-  image: string; // Assuming image is a URL, adjust if it's a StaticImageData object
+  link: string;
+  number: string;
 }
 
-function ServiceCard({ service, index }: { service: Service; index: number }) {
-  const [isHovered, setIsHovered] = useState(false);
-  const href = serviceLinks[service.title] || '/services/fwd-testing';
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      delay: i * 0.15,
+      ease: [0.16, 1, 0.3, 1] as const,
+    },
+  }),
+};
+
+export default function ServiceCard({
+  service,
+  index,
+}: {
+  service: Service;
+  index: number;
+}) {
+  const prefersReducedMotion = !!useReducedMotion();
+  const Icon = service.icon;
+  const statsNumber = parseInt(service.stats);
+  const statsSuffix = service.stats.replace(/[0-9]/g, "");
+
   return (
-    <Link href = {href}>
     <motion.article
-      initial={{ opacity: 0, y: 60 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: index * 0.15 }}
-      whileHover={{ y: -10 }}
-      className="group relative"
+      variants={cardVariants}
+      initial={prefersReducedMotion ? "visible" : "hidden"}
+      whileInView="visible"
+      custom={index}
+      viewport={{ once: true, amount: 0.15 }}
+      className="bg-surface-container-low p-12 group hover:bg-surface-container-high transition-colors duration-500 cursor-pointer"
       role="listitem"
     >
-      <div className="relative h-[400px] sm:h-[480px] lg:h-[550px] rounded-3xl overflow-hidden">
-        {/* Card background */}
-        <div className="absolute inset-0 bg-linear-to-b from-white/8 to-white/2 backdrop-blur-sm border border-white/10 rounded-3xl group-hover:border-amber-500/30 transition-colors duration-300" />
+      <Link href={service.link} className="block">
+        {/* Faded number */}
+        <span className="font-headline text-4xl text-primary-container font-light opacity-50 mb-8 block">
+          {service.number}
+        </span>
 
-        {/* Image */}
-        <div className="absolute inset-0 group-hover:scale-105 transition-transform duration-600">
-          <Image
-            src={service.image}
-            alt=""
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-            className="object-cover opacity-40"
-            loading="lazy"
-            role="presentation"
-          />
-          <div className="absolute inset-0 bg-linear-to-t from-[#030303] via-[#030303]/80 to-transparent" />
+        {/* Icon + Title row */}
+        <div className="flex items-center gap-4 mb-4">
+          <Icon className="w-6 h-6 text-primary shrink-0" aria-hidden="true" />
+          <h3 className="font-headline text-2xl font-bold text-white uppercase tracking-tight">
+            {service.title}
+          </h3>
         </div>
 
-        {/* Content */}
-        <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-between">
-          {/* Top section */}
-          <div className="flex justify-between items-start">
-            <span className="text-3xl sm:text-5xl group-hover:scale-125 transition-transform duration-300" aria-hidden="true">
-              {service.icon}
+        {/* Description */}
+        <p className="text-on-surface-variant leading-relaxed mb-12">
+          {service.desc}
+        </p>
+
+        {/* Bottom row */}
+        <div className="flex items-end justify-between">
+          {/* Arrow link */}
+          <span className="flex items-center gap-3 text-primary font-label text-xs uppercase font-bold tracking-widest group-hover:gap-6 transition-all duration-500">
+            Explore
+            <ArrowRight className="w-4 h-4" aria-hidden="true" />
+          </span>
+
+          {/* Stat */}
+          <div className="text-right">
+            <AnimatedCounter
+              target={statsNumber}
+              suffix={statsSuffix}
+              className="font-headline text-2xl font-bold text-white block"
+            />
+            <span className="font-label text-[10px] text-white/40 uppercase tracking-widest">
+              {service.label}
             </span>
-            <div className="text-right">
-              <div className="text-2xl sm:text-4xl font-bold text-white">{service.stats}</div>
-              <div className="text-xs sm:text-sm text-white/50">{service.label}</div>
-            </div>
-          </div>
-
-          {/* Bottom section */}
-          <div>
-            <h3 className="text-2xl sm:text-4xl font-bold text-white mb-3 sm:mb-4 group-hover:translate-x-2 transition-transform duration-300">
-              {service.title}
-            </h3>
-
-            <p className="text-sm sm:text-base text-white/60 mb-4 sm:mb-6 leading-relaxed">
-              {service.desc}
-            </p>
-
-            <div className="h-1 bg-linear-to-r from-amber-500 to-orange-500 rounded-full mb-4 sm:mb-6 w-[40%] group-hover:w-full transition-all duration-500" aria-hidden="true" />
-
-              <span>Learn more</span>
-              <svg
-                className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-300"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-              <span className="sr-only">about {service.title}</span>
           </div>
         </div>
-      </div>
+      </Link>
     </motion.article>
-    </Link>
   );
 }
-export default ServiceCard;

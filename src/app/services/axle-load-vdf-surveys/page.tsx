@@ -2,11 +2,15 @@ import ServicePageTemplate, { ServicePageData } from '../../components/ServicePa
 import HeroImage from '../../city-skyline.jpg';
 
 const data: ServicePageData = {
-  title: "Axle Load & VDF Surveys",
+  title: "AXLE LOAD",
+  titleAccent: "SURVEYS",
   tagline: "Know the Load — Plan Smarter",
+  overline: "TRAFFIC LOADING ANALYSIS",
   heroImage: HeroImage,
   accentColor: "teal",
   icon: "⚖️",
+  stats: { value: "50+", label: "Surveys Completed" },
+  compliance: { label: "MoRTH", value: "Compliant" },
   sections: [
     {
       body: "Understanding traffic loading is fundamental to designing and maintaining durable pavements. PMS conducts Axle Load Surveys to determine the Vehicle Damage Factor (VDF) — a key parameter influencing pavement design life.",

@@ -2,11 +2,14 @@ import ServicePageTemplate, { ServicePageData } from '../../components/ServicePa
 import HeroImage from '../../R-and-D.jpg';
 
 const data: ServicePageData = {
-  title: "Advisory & Training",
+  title: "ADVISORY",
+  titleAccent: "& TRAINING",
   tagline: "Building Knowledge That Delivers",
+  overline: "KNOWLEDGE & CAPACITY BUILDING",
   heroImage: HeroImage,
   accentColor: "indigo",
   icon: "🎓",
+  stats: { value: "1000+", label: "Professionals Trained" },
   sections: [
     {
       body: "PMS is founded by researchers, academicians, and pavement engineering professionals committed to bridging the gap between theory and field practice. Our Advisory and Training division focuses on building technical capacity across government, consulting, and academic sectors.",

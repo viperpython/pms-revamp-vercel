@@ -1,9 +1,9 @@
-import { useScroll, AnimatePresence, motion } from "framer-motion";
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import PMSLogo from "../Untitled.png";
+"use client";
 
-// Define Lenis types for better type safety
+import { motion } from "framer-motion";
+import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
+
 interface LenisScrollToOptions {
   offset?: number;
   duration?: number;
@@ -14,23 +14,14 @@ interface Lenis {
   scrollTo: (target: HTMLElement, options?: LenisScrollToOptions) => void;
 }
 
-// Floating navigation with Lenis smooth scroll
+const NAV_ITEMS = ["Services", "Vision", "Values", "Advantage"] as const;
+const SECTIONS = NAV_ITEMS.map((s) => s.toLowerCase());
+
 function FloatingNav() {
-  const [visible, setVisible] = useState(false);
-  const [activeSection, setActiveSection] = useState('');
-  const { scrollY } = useScroll();
+  const [activeSection, setActiveSection] = useState("");
 
+  // Track active section via IntersectionObserver
   useEffect(() => {
-    const unsubscribe = scrollY.on("change", (latest) => {
-      setVisible(latest > 100);
-    });
-    return unsubscribe;
-  }, [scrollY]);
-
-  // Track active section based on scroll position
-  useEffect(() => {
-    const sections = ['services', 'vision', 'values', 'advantage'];
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -39,10 +30,10 @@ function FloatingNav() {
           }
         });
       },
-      { rootMargin: '-40% 0px -40% 0px', threshold: 0 }
+      { rootMargin: "-40% 0px -40% 0px", threshold: 0 }
     );
 
-    sections.forEach((id) => {
+    SECTIONS.forEach((id) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
@@ -50,70 +41,103 @@ function FloatingNav() {
     return () => observer.disconnect();
   }, []);
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
-    e.preventDefault();
+  const scrollTo = useCallback((sectionId: string) => {
     const target = document.getElementById(sectionId);
     if (!target) return;
 
-    // Access the global Lenis instance with type safety
     const lenis = (window as Window & { __lenis?: Lenis }).__lenis;
     if (lenis) {
       lenis.scrollTo(target, {
-        offset: -80,       // offset so the section isn't hidden behind the nav
-        duration: 1.2,     // smooth duration in seconds
-        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // ease-out expo
+        offset: -80,
+        duration: 1.2,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       });
     } else {
-      // Fallback: native smooth scroll
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  };
+  }, []);
 
-  const navItems = ['Services', 'Vision', 'Values', 'Advantage'];
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
+      e.preventDefault();
+      scrollTo(sectionId);
+    },
+    [scrollTo]
+  );
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLAnchorElement>, sectionId: string) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        scrollTo(sectionId);
+      }
+    },
+    [scrollTo]
+  );
 
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.nav
-          initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -100, opacity: 0 }}
-          transition={{ type: "spring", damping: 20 }}
-          className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-999 px-4 sm:px-8 py-3 sm:py-4 bg-black/40 backdrop-blur-xl rounded-full border border-white/10 max-w-[95vw]"
-          aria-label="Main navigation"
+    <motion.nav
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      className="fixed top-0 w-full z-50 glass-panel shadow-[0px_20px_40px_rgba(0,0,0,0.4)] border-b border-outline-variant/15"
+      aria-label="Main navigation"
+    >
+      <div className="flex items-center justify-between px-12 py-6 max-w-[1920px] mx-auto">
+        {/* Left: PMS Logo Badge */}
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          className="flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-container rounded-lg"
+          aria-label="PMS — Back to top"
         >
-          <div className="flex items-center gap-4 sm:gap-8">
-            <Image src={PMSLogo} alt="" width={28} height={28} className="opacity-80 shrink-0" role="presentation" />
-            {navItems.map((item) => {
-              const sectionId = item.toLowerCase();
-              const isActive = activeSection === sectionId;
-
-              return (
-                <a
-                  key={item}
-                  href={`#${sectionId}`}
-                  onClick={(e) => handleClick(e, sectionId)}
-                  className={`relative text-xs sm:text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-sm whitespace-nowrap ${isActive
-                      ? 'text-amber-400'
-                      : 'text-white/70 hover:text-white focus-visible:text-white'
-                    }`}
-                  aria-current={isActive ? 'true' : undefined}
-                >
-                  {item}
-                  {isActive && (
-                    <motion.div
-                      layoutId="nav-indicator"
-                      className="absolute -bottom-1.5 left-0 right-0 h-0.5 bg-amber-400 rounded-full"
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    />
-                  )}
-                </a>
-              );
-            })}
+          <div className="w-8 h-8 bg-primary-container rounded-lg flex items-center justify-center">
+            <span className="font-headline text-[0.6rem] font-bold text-on-primary tracking-wider">
+              PMS
+            </span>
           </div>
-        </motion.nav>
-      )}
-    </AnimatePresence>
+          <span className="font-headline text-sm font-bold text-white tracking-widest uppercase">
+            PMS
+          </span>
+        </a>
+
+        {/* Center: Nav Links */}
+        <div className="hidden md:flex items-center gap-8">
+          {NAV_ITEMS.map((item) => {
+            const sectionId = item.toLowerCase();
+            const isActive = activeSection === sectionId;
+
+            return (
+              <a
+                key={item}
+                href={`#${sectionId}`}
+                onClick={(e) => handleClick(e, sectionId)}
+                onKeyDown={(e) => handleKeyDown(e, sectionId)}
+                className={`font-label text-[0.75rem] font-bold uppercase tracking-[0.15em] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-container focus-visible:ring-offset-2 focus-visible:ring-offset-surface rounded-sm ${
+                  isActive
+                    ? "text-primary-container border-b-2 border-primary-container pb-1"
+                    : "text-white/70 hover:text-white"
+                }`}
+                aria-current={isActive ? "true" : undefined}
+              >
+                {item}
+              </a>
+            );
+          })}
+        </div>
+
+        {/* Right: Contact CTA */}
+        <Link
+          href="/contact"
+          className="btn-gradient px-6 py-2 rounded-lg font-label text-[0.75rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-container focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+        >
+          Contact Us
+        </Link>
+      </div>
+    </motion.nav>
   );
 }
 

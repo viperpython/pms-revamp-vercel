@@ -2,11 +2,15 @@ import ServicePageTemplate, { ServicePageData } from '../../components/ServicePa
 import HeroImage from '../../R-and-D.jpg';
 
 const data: ServicePageData = {
-  title: "RAMS-Aligned Deliverables",
+  title: "RAMS",
+  titleAccent: "DELIVERABLES",
   tagline: "Data That Fits the System",
+  overline: "DATA MANAGEMENT SYSTEM",
   heroImage: HeroImage,
   accentColor: "emerald",
   icon: "📊",
+  stats: { value: "100+", label: "RAMS Uploads" },
+  compliance: { label: "NHAI RAMS", value: "Compliant" },
   sections: [
     {
       body: "Our deliverables are fully compliant with MoRTH/NHAI's Road Asset Management System (RAMS) framework. We prepare outputs compatible with RAMS data upload formats, ensuring smooth integration into national and state highway management databases.",

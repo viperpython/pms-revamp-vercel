@@ -2,11 +2,15 @@ import ServicePageTemplate, { ServicePageData } from '../../components/ServicePa
 import HeroImage from '../../city-skyline.jpg';
 
 const data: ServicePageData = {
-  title: "Field Investigations",
+  title: "FIELD",
+  titleAccent: "INVESTIGATIONS",
   tagline: "From Surface to Subgrade",
+  overline: "PAVEMENT & SUBGRADE ANALYSIS",
   heroImage: HeroImage,
   accentColor: "rose",
   icon: "🔍",
+  stats: { value: "300+", label: "Sites Investigated" },
+  compliance: { label: "IRC/MoRTH", value: "Compliant" },
   sections: [
     {
       body: "PMS offers a complete range of field investigation services for pavement and subgrade characterization. We specialize in integrating geotechnical field investigations with pavement evaluations to provide holistic understanding of structural behavior.",

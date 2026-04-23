@@ -6,11 +6,15 @@ import ServicePageTemplate, { ServicePageData } from '../../components/ServicePa
 import HeroImage from '../../Testing.jpg';
 
 const data: ServicePageData = {
-  title: "FWD Testing",
+  title: "FWD",
+  titleAccent: "TESTING",
   tagline: "Measure — Analyze — Improve",
+  overline: "STRUCTURAL PAVEMENT EVALUATION",
   heroImage: HeroImage,
   accentColor: "amber",
   icon: "🔬",
+  stats: { value: "500+", label: "Projects Delivered" },
+  compliance: { label: "NHAI", value: "Compliant" },
   sections: [
     {
       body: "Conduct network and project-level pavement condition surveys using a Falling Weight Deflectometer to evaluate the structural capacity and remaining life."

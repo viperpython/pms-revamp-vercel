@@ -1,26 +1,208 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ═══════════════════════════════════════════════════════════════
+   TITANIUM AMBER DESIGN SYSTEM
+   "The Architectural Monolith"
+   Industrial Precision × Bespoke Luxury
+   ═══════════════════════════════════════════════════════════════ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* ── Typography ────────────────────────────────────────────── */
+  --font-headline: var(--font-headline), "Space Grotesk", system-ui, sans-serif;
+  --font-body: var(--font-body), "Inter", system-ui, sans-serif;
+  --font-label: var(--font-body), "Inter", system-ui, sans-serif;
+
+  /* ── Surface Hierarchy (Tonal Layering) ────────────────────── */
+  --color-surface: #111318;
+  --color-surface-dim: #111318;
+  --color-surface-bright: #37393e;
+  --color-surface-container-lowest: #0c0e12;
+  --color-surface-container-low: #1a1c20;
+  --color-surface-container: #1e2024;
+  --color-surface-container-high: #282a2e;
+  --color-surface-container-highest: #333539;
+  --color-surface-variant: #333539;
+  --color-background: #111318;
+
+  /* ── Content Colors ────────────────────────────────────────── */
+  --color-on-surface: #e2e2e8;
+  --color-on-surface-variant: #d5c4ab;
+  --color-on-background: #e2e2e8;
+
+  /* ── Primary (Infrastructure Gold) ─────────────────────────── */
+  --color-primary: #ffdca1;
+  --color-primary-container: #ffb800;
+  --color-on-primary: #412d00;
+  --color-on-primary-fixed: #271900;
+  --color-primary-fixed: #ffdea8;
+
+  /* ── Secondary ─────────────────────────────────────────────── */
+  --color-secondary: #e8c17c;
+  --color-secondary-container: #5d4208;
+  --color-on-secondary: #412d00;
+
+  /* ── Tertiary (Structural Blue) ────────────────────────────── */
+  --color-tertiary: #abebff;
+  --color-tertiary-container: #00d7fe;
+  --color-on-tertiary: #003641;
+
+  /* ── Utility ───────────────────────────────────────────────── */
+  --color-outline: #9e8f78;
+  --color-outline-variant: #514532;
+  --color-error: #ffb4ab;
+
+  /* ── Border Radius (Industrial: sharp, slightly softened) ─── */
+  --radius-DEFAULT: 0.125rem;
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+  --radius-2xl: 0.75rem;
+
+  /* ── Easing ────────────────────────────────────────────────── */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base ─────────────────────────────────────────────────────── */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ── Selection ────────────────────────────────────────────────── */
+::selection {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-fixed);
+}
+
+/* ── Premium Scrollbar ────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.06); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.12); }
+html { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.06) transparent; }
+
+/* ── Focus ────────────────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid var(--color-primary-container);
+  outline-offset: 2px;
+}
+
+/* ── Glassmorphism ────────────────────────────────────────────── */
+.glass-panel {
+  background: rgba(30, 32, 36, 0.8);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* ── Gradient Text (Infrastructure Gold) ──────────────────────── */
+.text-gradient {
+  background: linear-gradient(45deg, #ffb800, #ffdca1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Gradient Button ──────────────────────────────────────────── */
+.btn-gradient {
+  background: linear-gradient(45deg, #ffb800, #ffdca1);
+  color: #271900;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  transition: all 0.3s ease;
+}
+.btn-gradient:hover {
+  filter: brightness(1.1);
+  transform: scale(1.02);
+}
+.btn-gradient:active {
+  transform: scale(0.98);
+}
+
+/* ── Ghost Button ─────────────────────────────────────────────── */
+.btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(158, 143, 120, 0.3);
+  color: white;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  transition: all 0.3s ease;
+}
+.btn-ghost:hover {
+  background: var(--color-surface-bright);
+}
+
+/* ── Shimmer Border ───────────────────────────────────────────── */
+.shimmer-border {
+  position: relative;
+}
+.shimmer-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(81, 69, 50, 0.15);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ── Marquee ──────────────────────────────────────────────────── */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── Keyframes ────────────────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 184, 0, 0.05); }
+  50% { box-shadow: 0 0 40px rgba(255, 184, 0, 0.15); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── Noise Texture (subtle) ───────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.02;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+  mix-blend-mode: overlay;
+}
+
+/* ── Reduced Motion ───────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  body::before { display: none !important; }
 }
